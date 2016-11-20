@@ -14,6 +14,7 @@ const parts = require('./webpack-parts/parts');
 const PATHS = {
     app: path.join(__dirname, 'app'),
     build: path.join(__dirname, 'build'),
+    styles: path.join(__dirname, 'styles')
 };
 
 // 3. Define webpack's parameters: entry, output & plugins
@@ -37,14 +38,19 @@ var config;
 // 5. Splitting configuration's decision is determined by an environment variable
 //    Additional settings are merged into configuration object based on this variable.   
 switch(process.env.npm_lifecycle_event){
+    // 9. Merge devServer, css setup config parts, defined in webpack-parts.js file.
     case 'build':
-        config = merge(common, {}); 
+        console.log('[INFO-webpack.config] - \'build\' config is picked.');
+        config = merge(common, parts.setupCSS(PATHS.styles)); 
         break;
-    default: config = merge(common, parts.devServer({
-        // Customize host/port here if needed
-        host: process.env.HOST,
-        port: process.env.PORT        
-    })); 
+    default:
+        console.log('[INFO-webpack.config] - default config is picked.');
+        var commonWithCss = merge(common, parts.setupCSS(PATHS.styles)); 
+        config = merge(commonWithCss, parts.devServer({
+            // Customize host/port here if needed
+            host: process.env.HOST,
+            port: process.env.PORT        
+        })); 
 }
 
 // 7. Validate the configuration object before we let webpack read it.

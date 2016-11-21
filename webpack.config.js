@@ -11,11 +11,12 @@ const validate = require('webpack-validator');
 const parts = require('./webpack-parts/parts');
 
 // 2. Define path to source & build directories
-const PATHS = {
+let PATHS = {
     app: path.join(__dirname, 'app'),
-    build: path.join(__dirname, 'build'),
-    styles: path.join(__dirname, 'styles')
+    build: path.join(__dirname, 'build') 
 };
+
+PATHS.styles = [ path.join(__dirname, 'styles'), PATHS.app ];
 
 // 3. Define webpack's parameters: entry, output & plugins
 const common = {

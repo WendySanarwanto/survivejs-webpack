@@ -55,3 +55,14 @@ exports.setupCSS = function(paths){
         }
     };
 }
+
+exports.setupSourceMap = function(){
+  return {
+    dev: {
+      devtool: 'eval-source-map', 
+      output: { 
+        sourceMapFilename: '[file].map' 
+      }
+    }
+  };
+}

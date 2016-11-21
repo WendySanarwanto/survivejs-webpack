@@ -46,12 +46,13 @@ switch(process.env.npm_lifecycle_event){
         break;
     default:
         console.log('[INFO-webpack.config] - default config is picked.');
-        var commonWithCss = merge(common, parts.setupCSS(PATHS.styles)); 
-        config = merge(commonWithCss, parts.devServer({
+        var commonWithCss = merge(common, parts.setupCSS(PATHS.styles));
+        // 10. Enable source map during development 
+        config = merge(commonWithCss, parts.setupSourceMap().dev, parts.devServer({            
             // Customize host/port here if needed
             host: process.env.HOST,
             port: process.env.PORT        
-        })); 
+        }));
 }
 
 // 7. Validate the configuration object before we let webpack read it.

@@ -67,12 +67,30 @@ exports.setupSourceMap = function(){
   };
 }
 
-exports.minify = function(){
+exports.minify = function(args = {}){
   return {
     plugins: [
       new webpack.optimize.UglifyJsPlugin({
+        // Set true to enable for neater output
+        beautify: args.beautify || false,
+        // Eliminate comments ?
+        comments: args.comments || false,
+        // Compression specific options        
         compress: {
-          warnings: false
+          warnings: args.compress_warnings || false,
+          // Drop console statement ?
+          drop_console: args.compress_drop_console || false
+        },
+        // Mangling specific options
+        mangle: {
+          // Don't mangle $
+          except: args.mangle_exception || ['$', 'webpackJsonp'],
+
+          // Don't care about IE8
+          screw_ie8: args.mangle_screw_ie8 || true,
+
+          // Don't mangle function names
+          keep_fnames: args.mangle_fnames || true
         }
       })
     ]

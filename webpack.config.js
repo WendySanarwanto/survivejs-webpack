@@ -42,17 +42,22 @@ switch(process.env.npm_lifecycle_event){
     // 9. Merge devServer, css setup config parts, defined in webpack-parts.js file.
     case 'build':
         console.log('[INFO-webpack.config] - \'build\' config is picked.');
-        config = merge(common, parts.setupCSS(PATHS.styles)); 
+        config = merge(common,
+                        parts.minify(),
+                        parts.setupCSS(PATHS.styles),                        
+                        parts.setupSourceMap().dev
+                    ); 
         break;
     default:
         console.log('[INFO-webpack.config] - default config is picked.');
-        var commonWithCss = merge(common, parts.setupCSS(PATHS.styles));
-        // 10. Enable source map during development 
-        config = merge(commonWithCss, parts.setupSourceMap().dev, parts.devServer({            
-            // Customize host/port here if needed
-            host: process.env.HOST,
-            port: process.env.PORT        
-        }));
+        config = merge(common,
+                        parts.minify(),          
+                        parts.setupCSS(PATHS.styles), 
+                        parts.setupSourceMap().dev, 
+                        parts.devServer({
+                            host: process.env.HOST,
+                            port: process.env.PORT                          
+                        }));
 }
 
 // 7. Validate the configuration object before we let webpack read it.

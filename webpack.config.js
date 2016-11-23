@@ -37,22 +37,26 @@ const common = {
 var config; 
 
 // 5. Splitting configuration's decision is determined by an environment variable
-//    Additional settings are merged into configuration object based on this variable.   
+//    Additional settings are merged into configuration object based on this variable.
+// Default config merges minify & setup css configs   
+config = merge(common,
+                parts.minify(),
+                parts.setupCSS(PATHS.styles)                        
+            ); 
+
 switch(process.env.npm_lifecycle_event){
     // 9. Merge devServer, css setup config parts, defined in webpack-parts.js file.
     case 'build':
         console.log('[INFO-webpack.config] - \'build\' config is picked.');
-        config = merge(common,
-                        parts.minify(),
-                        parts.setupCSS(PATHS.styles),                        
-                        parts.setupSourceMap().dev
-                    ); 
+        config = merge(config, parts.setupSourceMap().dev); 
+        break;
+    case 'buildProd':
+        console.log('[INFO-webpack.config] - \'buildProd\' config is picked.');
+        config = merge(config, parts.setFreeVariable('process.env.NODE_ENV', 'production'));
         break;
     default:
         console.log('[INFO-webpack.config] - default config is picked.');
-        config = merge(common,
-                        parts.minify(),          
-                        parts.setupCSS(PATHS.styles), 
+        config = merge(config,
                         parts.setupSourceMap().dev, 
                         parts.devServer({
                             host: process.env.HOST,

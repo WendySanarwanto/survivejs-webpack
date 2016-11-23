@@ -38,6 +38,7 @@ var config;
 
 // 5. Splitting configuration's decision is determined by an environment variable
 //    Additional settings are merged into configuration object based on this variable.
+
 // Default config merges minify & setup css configs   
 config = merge(common,
                 parts.minify(),
@@ -50,6 +51,8 @@ switch(process.env.npm_lifecycle_event){
         console.log('[INFO-webpack.config] - \'build\' config is picked.');
         config = merge(config, parts.setupSourceMap().dev); 
         break;
+    // 10. Merge 'FreeVariable' settings which does setting NODE_ENV variable to 'production'' programmatically, 
+    //     as a way to tell webpack to optimise the build into smaller size.         
     case 'buildProd':
         console.log('[INFO-webpack.config] - \'buildProd\' config is picked.');
         config = merge(config, parts.setFreeVariable('process.env.NODE_ENV', 'production'));

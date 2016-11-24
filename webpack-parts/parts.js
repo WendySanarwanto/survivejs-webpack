@@ -1,5 +1,8 @@
 const webpack = require('webpack');
 
+/**
+ * A helper for defining Webpack's development server's settings
+ */
 exports.devServer = function(options) {
   return {
     watchOptions: {
@@ -42,6 +45,9 @@ exports.devServer = function(options) {
   };
 }
 
+/**
+ * A helper defining setting to determine how the Webpack would bundle css files. 
+ */
 exports.setupCSS = function(paths){
     return {
         module: {
@@ -56,6 +62,9 @@ exports.setupCSS = function(paths){
     };
 }
 
+/**
+ * A helper for defining setting of how the Webpack would bundle css files. 
+ */
 exports.setupSourceMap = function(){
   return {
     dev: {
@@ -67,6 +76,9 @@ exports.setupSourceMap = function(){
   };
 }
 
+/**
+ * A helper for defining the setting of how the Webpack would minify the bundled JS file. 
+ */
 exports.minify = function(args = {}){
   return {
     plugins: [
@@ -97,6 +109,9 @@ exports.minify = function(args = {}){
   };
 }
 
+/**
+ * A helper for defining a webpack setting to optimise the bundled JS file
+ */
 exports.setFreeVariable = function(key, value){
   const env = {};
   env[key] = JSON.stringify(value);

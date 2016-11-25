@@ -21,11 +21,12 @@ PATHS.styles = [ path.join(__dirname, 'styles'), PATHS.app ];
 // 3. Define webpack's parameters: entry, output & plugins
 const common = {
     entry: {
-        app: PATHS.app
+        app: PATHS.app,
+        vendor: ['react']
     },
     output: {
         path: PATHS.build,
-        filename: 'bundle.js'
+        filename: '[name].js'
     },
     plugins: [
         new HtmlWebpackPlugin({

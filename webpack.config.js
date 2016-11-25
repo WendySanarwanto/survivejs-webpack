@@ -21,8 +21,7 @@ PATHS.styles = [ path.join(__dirname, 'styles'), PATHS.app ];
 // 3. Define webpack's parameters: entry, output & plugins
 const common = {
     entry: {
-        app: PATHS.app,
-        vendor: ['react']
+        app: PATHS.app
     },
     output: {
         path: PATHS.build,
@@ -50,13 +49,15 @@ switch(process.env.npm_lifecycle_event){
     // 9. Merge devServer, css setup config parts, defined in webpack-parts.js file.
     case 'build':
         console.log('[INFO-webpack.config] - \'build\' config is picked.');
-        config = merge(config, parts.setupSourceMap().dev); 
+        config = merge(config, parts.extractBundle({ name:'vendor', entries: ['react'] }),
+                               parts.setupSourceMap().dev); 
         break;
     // 10. Merge 'FreeVariable' settings which does setting NODE_ENV variable to 'production'' programmatically, 
     //     as a way to tell webpack to optimise the build into smaller size.         
     case 'buildProd':
         console.log('[INFO-webpack.config] - \'buildProd\' config is picked.');
-        config = merge(config, parts.setFreeVariable('process.env.NODE_ENV', 'production'));
+        config = merge(config, parts.extractBundle({ name:'vendor', entries: ['react'] }),
+                               parts.setFreeVariable('process.env.NODE_ENV', 'production'));
         break;
     default:
         console.log('[INFO-webpack.config] - default config is picked.');

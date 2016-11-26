@@ -51,6 +51,7 @@ switch(process.env.npm_lifecycle_event){
     case 'build':
         console.log('[INFO-webpack.config] - \'build\' config is picked.');
         config = merge(config, parts.extractBundle({ name:'vendor', entries: ['react'] }),
+                               parts.clean(PATHS.build),
                                parts.setupSourceMap().dev); 
         break;
     // 10. Merge 'FreeVariable' settings which does setting NODE_ENV variable to 'production'' programmatically, 
@@ -58,6 +59,7 @@ switch(process.env.npm_lifecycle_event){
     case 'buildProd':
         console.log('[INFO-webpack.config] - \'buildProd\' config is picked.');
         config = merge(config, parts.extractBundle({ name:'vendor', entries: ['react'] }),
+                               parts.clean(PATHS.build),
                                parts.setFreeVariable('process.env.NODE_ENV', 'production'));
         break;
     default:

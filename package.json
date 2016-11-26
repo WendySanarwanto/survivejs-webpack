@@ -5,17 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf ./build && webpack",
-    "buildProd": "rimraf ./build && webpack",
+    "build": "webpack",
+    "buildProd": "webpack",
     "start": "webpack-dev-server --inline --hot --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "clean-webpack-plugin": "^0.1.14",
     "css-loader": "^0.26.0",
     "html-webpack-plugin": "^2.24.1",
-    "rimraf": "^2.5.4",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.3",
     "webpack-dev-server": "^1.16.2",

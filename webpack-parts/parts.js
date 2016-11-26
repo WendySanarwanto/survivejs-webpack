@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-
+const CleanWebPackPlugin = require('clean-webpack-plugin');
 /**
  * A helper for defining Webpack's development server's settings
  */
@@ -141,5 +141,19 @@ exports.extractBundle = function(options){
       })      
     ]
   };
+}
 
+/**
+ * Clean build's artefact'
+ */
+exports.clean = function(path){
+  return {
+    plugins: [
+      new CleanWebPackPlugin([path], {
+        // Without `root` CleanWebpackPlugin won't point to our
+        // project and will fail to work.
+        root: process.cwd()
+      })
+    ]
+  };
 }

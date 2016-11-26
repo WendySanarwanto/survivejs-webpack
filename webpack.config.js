@@ -25,7 +25,8 @@ const common = {
     },
     output: {
         path: PATHS.build,
-        filename: '[name].js'
+        filename: '[name].[chunkhash].js',
+        chunkFilename: '[chunkhash].js'
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -61,6 +62,7 @@ switch(process.env.npm_lifecycle_event){
         break;
     default:
         console.log('[INFO-webpack.config] - default config is picked.');
+        config.output.filename = '[name].[hash].js'; 
         config = merge(config,
                         parts.setupSourceMap().dev, 
                         parts.devServer({

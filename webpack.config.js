@@ -14,6 +14,7 @@ const helpers = require('./webpack.helpers');
 let PATHS = {
     app: path.join(__dirname, 'app'),
     build: path.join(__dirname, 'build'),
+    style: path.join(__dirname, 'styles', 'style.css')
 };
 
 PATHS.styles = [ path.join(__dirname, 'styles'), PATHS.app ];
@@ -21,7 +22,8 @@ PATHS.styles = [ path.join(__dirname, 'styles'), PATHS.app ];
 // 3. Define webpack's parameters: entry, output & plugins
 const common = {
     entry: {
-        app: PATHS.app
+        app: PATHS.app,
+        style: PATHS.style
     },
     output: {
         path: PATHS.build,

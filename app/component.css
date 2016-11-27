@@ -1,4 +1,12 @@
-:local(.header) {
+:local(.component) 
+
+.header{
     font-family: "Arial, Helvetica, sans-serif";
     font-size: 50px;
+    color: blue;
 }
+
+:local(.component) .form-entry label {
+    font-size: 22px;
+    font-weight: normal;
+} 

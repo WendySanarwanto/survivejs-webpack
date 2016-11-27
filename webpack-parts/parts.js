@@ -1,5 +1,7 @@
 const webpack = require('webpack');
 const CleanWebPackPlugin = require('clean-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 /**
  * A helper for defining Webpack's development server's settings
  */
@@ -46,7 +48,7 @@ exports.devServer = function(options) {
 }
 
 /**
- * A helper defining setting to determine how the Webpack would bundle css files. 
+ * A helper defining setting to pick application's css files and then bundle them with the bundled js file. 
  */
 exports.setupCSS = function(paths){
     return {
@@ -156,4 +158,26 @@ exports.clean = function(path){
       })
     ]
   };
+}
+
+/**
+ * Extract CSS files from the bundled js files.
+ */
+exports.extractCSS = function(paths){
+    return {
+      module: {
+        loaders: [
+          // Extract CSS during build
+          { 
+            test: /\.css$/,
+            loader: ExtractTextPlugin.extract('style', 'css'),
+            include: paths 
+          }
+        ]
+      },
+      plugins: [
+        // Output extracted css to a file
+        new ExtractTextPlugin('[name].[chunkhash].css')
+      ]
+    };
 }

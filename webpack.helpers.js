@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const CleanWebPackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const PurifyCSSPlugin = require('purifycss-webpack-plugin');
 
 /**
  * A helper for defining Webpack's development server's settings
@@ -180,4 +181,19 @@ exports.extractCSS = function(paths){
         new ExtractTextPlugin('[name].[chunkhash].css')
       ]
     };
+}
+
+/**
+ * Eliminate portions of CSS files that are unused by application
+ */
+exports.purifyCSS = function(paths){
+  return {
+    plugins:[ new PurifyCSSPlugin({
+      basePath: process.cwd(),
+      // `paths` is used to point PurifyCSS to files not
+      // visible to Webpack. You can pass glob patterns
+      // to it.
+      paths: paths      
+    })]
+  };
 }

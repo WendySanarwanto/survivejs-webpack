@@ -17,7 +17,7 @@ let PATHS = {
     style: path.join(__dirname, 'styles', 'style.css')
 };
 
-// PATHS.styles = [ path.join(__dirname, 'styles'), PATHS.app ];
+PATHS.styles = [ path.join(__dirname, 'styles'), PATHS.app, PATHS.style ];
 
 // 3. Define webpack's parameters: entry, output & plugins
 const common = {
@@ -51,7 +51,7 @@ switch(process.env.npm_lifecycle_event){
     case 'build':
         console.log('[INFO-webpack.config] - \'buildDev\' config is picked.');
         config.output.path += '/dev';
-        config = merge(config, helpers.extractCSS(PATHS.style),
+        config = merge(config, helpers.extractCSS(PATHS.styles),
                                helpers.clean(config.output.path),
                                helpers.setupSourceMap().dev); 
         break;
@@ -60,7 +60,7 @@ switch(process.env.npm_lifecycle_event){
     case 'buildProd':
         console.log('[INFO-webpack.config] - \'buildProd\' config is picked.');
         config.output.path += '/prod';
-        config = merge(config, helpers.extractCSS(PATHS.style),
+        config = merge(config, helpers.extractCSS(PATHS.styles),
                                helpers.clean(config.output.path),
                                helpers.setFreeVariable('process.env.NODE_ENV', 'production'));
         break;

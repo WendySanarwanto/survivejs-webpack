@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "buildProd": "webpack",
+    "build": "webpack --profile",
+    "buildProd": "webpack --profile",
+    "build:stats": "webpack --profile --json > build-stats.json",
+    "buildProd:stats": "webpack --profile --json > build-prod-stats.json",
     "start": "webpack-dev-server --inline --hot --watch",
     "clean": "rimraf ./build/dev && rimraf ./build/prod"
   },

@@ -48,15 +48,25 @@ var config;
 config = merge(common, helpers.extractBundle({ name:'vendor', entries: ['react'] }),                   
                 helpers.minify()); 
 
+// Detect how npm is run and branch based on that
 const npmLifecycleEvent = process.env.npm_lifecycle_event; 
 const isBuildingWithStats = npmLifecycleEvent.includes('stats');
+const deployPublicPath = 'survivejs-webpack';
+const shouldBeDeployed = npmLifecycleEvent.includes('deploy');
+
+if (shouldBeDeployed){    
+    config.output.publicPath = deployPublicPath;
+    console.log('[DEBUG-WebpackConfig] - deploy option is selected. config = ',config);
+}
+
+
 switch(npmLifecycleEvent){
     // 9. Merge devServer, css setup config parts, defined in webpack-parts.js file.
     case 'build':
         if (!isBuildingWithStats) console.log('[INFO-webpack.config] - \'buildDev\' config is picked.');
         config.output.path += '/dev';
         config = merge(config, helpers.extractCSS(PATHS.styles),
-                               helpers.purifyCSS([PATHS.app]), // we put call to purifyCss helper after call extractCss helper.The order is important. 
+                               //helpers.purifyCSS(PATHS.styles), // we put call to purifyCss helper after call extractCss helper.The order is important. 
                                helpers.clean(config.output.path),
                                helpers.setupSourceMap().dev); 
         break;
@@ -66,7 +76,7 @@ switch(npmLifecycleEvent){
         if (!isBuildingWithStats) console.log('[INFO-webpack.config] - \'buildProd\' config is picked.');
         config.output.path += '/prod';
         config = merge(config, helpers.extractCSS(PATHS.styles),
-                               helpers.purifyCSS([PATHS.app]), // we put call to purifyCss helper after call extractCss helper.The order is important.
+                               //helpers.purifyCSS([PATHS.app]), // we put call to purifyCss helper after call extractCss helper.The order is important.
                                helpers.clean(config.output.path),
                                helpers.setFreeVariable('process.env.NODE_ENV', 'production'));
         break;

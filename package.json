@@ -6,11 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --profile",
-    "buildProd": "webpack --profile",
-    "build:stats": "webpack --profile --json > build-stats.json",
+    "build:stats": "webpack --profile --json > build-stats.json",    
+    "build:deploy": "npm run build && gh-pages -d build/dev",    
+    "buildProd": "webpack --profile",    
     "buildProd:stats": "webpack --profile --json > build-prod-stats.json",
+    "buildProd:deploy": "npm run buildProd && gh-pages -d build/prod",
     "start": "webpack-dev-server --inline --hot --watch",
-    "clean": "rimraf ./build/dev && rimraf ./build/prod"
+    "clean": "rimraf ./build/dev && rimraf ./build/prod"    
   },
   "keywords": [],
   "author": "",
@@ -19,6 +21,7 @@
     "clean-webpack-plugin": "^0.1.14",
     "css-loader": "^0.26.0",
     "extract-text-webpack-plugin": "^1.0.1",
+    "gh-pages": "^0.12.0",
     "html-webpack-plugin": "^2.24.1",
     "purifycss-webpack-plugin": "^2.0.3",
     "rimraf": "^2.5.4",

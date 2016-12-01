@@ -11,21 +11,22 @@ const validate = require('webpack-validator');
 const helpers = require('./webpack.helpers');
 
 // 2. Define path to source & build directories
+const stylesDirPath = path.join(__dirname, 'styles'); 
 let PATHS = {
     app: path.join(__dirname, 'app'),
     build: path.join(__dirname, 'build'),
-    style: [
-        path.join(__dirname, 'node_modules', 'purecss', 'pure.css'),
-        path.join(__dirname, 'styles', 'style.css')]
+    style: path.join(stylesDirPath, 'style.css'),
+    styleDeps: [ path.join(__dirname, 'node_modules', 'purecss', 'pure.css') ]         
 };
 
-PATHS.styles = [ path.join(__dirname, 'styles'), PATHS.app, ...PATHS.style ];
+PATHS.appStyles = [ stylesDirPath, PATHS.app, PATHS.style ]; 
+PATHS.styles = [ ...PATHS.appStyles, ...PATHS.styleDeps ];
 
 // 3. Define webpack's parameters: entry, output & plugins
 const common = {
     entry: {
         app: PATHS.app,
-        style: PATHS.style
+        style: [ PATHS.style, ...PATHS.styleDeps ]
     },
     output: {
         path: PATHS.build,
@@ -65,7 +66,9 @@ switch(npmLifecycleEvent){
     case 'build':
         if (!isBuildingWithStats) console.log('[INFO-webpack.config] - \'buildDev\' config is picked.');
         config.output.path += '/dev';
-        config = merge(config, helpers.extractCSS(PATHS.styles),
+        config = merge(config, helpers.extractCSS(PATHS.styleDeps),
+                               helpers.extractCSS(PATHS.appStyles),
+                               //helpers.extractCSS(PATHS.styles),
                                //helpers.purifyCSS(PATHS.styles), // we put call to purifyCss helper after call extractCss helper.The order is important. 
                                helpers.clean(config.output.path),
                                helpers.setupSourceMap().dev); 
@@ -75,7 +78,9 @@ switch(npmLifecycleEvent){
     case 'buildProd':
         if (!isBuildingWithStats) console.log('[INFO-webpack.config] - \'buildProd\' config is picked.');
         config.output.path += '/prod';
-        config = merge(config, helpers.extractCSS(PATHS.styles),
+        config = merge(config, helpers.extractCSS(PATHS.styleDeps),
+                               helpers.extractCSS(PATHS.appStyles),
+                               //helpers.extractCSS(PATHS.styles),
                                //helpers.purifyCSS([PATHS.app]), // we put call to purifyCss helper after call extractCss helper.The order is important.
                                helpers.clean(config.output.path),
                                helpers.setFreeVariable('process.env.NODE_ENV', 'production'));
@@ -83,7 +88,8 @@ switch(npmLifecycleEvent){
     default:
         if (!isBuildingWithStats) console.log('[INFO-webpack.config] - default config is picked.');
         config.output.filename = '[name].[hash].js'; 
-        config = merge(config,  helpers.setupCSS(PATHS.styles),
+        config = merge(config,  helpers.setupCSS(PATHS.styleDeps),
+                                helpers.setupCSS(PATHS.appStyles),
                                 helpers.setupSourceMap().dev,
                                 helpers.devServer({
                                     host: process.env.HOST,

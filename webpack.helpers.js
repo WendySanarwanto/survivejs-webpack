@@ -66,6 +66,21 @@ exports.setupCSS = function(paths){
 }
 
 /**
+ * A helper defining setting to pick application's scss files, transpile them as css files and then bundle them with the bundled js file. 
+ */
+exports.setupSCSS = function(paths){
+  return {
+    module: {
+      loaders: [{
+          test: /\.scss$/,
+          loaders: ['style', 'css', 'sass'],
+          include: paths
+        }]
+    }
+  }
+}
+
+/**
  * A helper for defining setting of how the Webpack would bundle css files. 
  */
 exports.setupSourceMap = function(){
@@ -181,6 +196,23 @@ exports.extractCSS = function(paths){
         new ExtractTextPlugin('[name].[chunkhash].css')
       ]
     };
+}
+
+/**
+ * Extract scss files from the bundled js files
+ */
+exports.extractSCSS = function(paths){
+  return {
+    module: {
+      loaders: [{
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract('css!sass')
+      }]
+    },
+    plugins: [
+      new ExtractTextPlugin('[name].[chunkhash].css', { allChunks: true })
+    ]
+  };
 }
 
 /**

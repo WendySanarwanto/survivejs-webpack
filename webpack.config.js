@@ -15,7 +15,7 @@ const stylesDirPath = path.join(__dirname, 'styles');
 let PATHS = {
     app: path.join(__dirname, 'app'),
     build: path.join(__dirname, 'build'),
-    style: path.join(stylesDirPath, 'style.css'),
+    style: path.join(stylesDirPath, 'style.scss'),
     styleDeps: [ path.join(__dirname, 'node_modules', 'purecss', 'pure.css') ]         
 };
 
@@ -25,8 +25,8 @@ PATHS.styles = [ ...PATHS.appStyles, ...PATHS.styleDeps ];
 // 3. Define webpack's parameters: entry, output & plugins
 const common = {
     entry: {
-        app: PATHS.app,
-        style: [ PATHS.style, ...PATHS.styleDeps ]
+        app: [ PATHS.app ],
+        style: [ PATHS.app, PATHS.style, ...PATHS.styleDeps ]
     },
     output: {
         path: PATHS.build,
@@ -47,7 +47,7 @@ var config;
 
 // Default config merges minify & setup css configs   
 config = merge(common, helpers.extractBundle({ name:'vendor', entries: ['react'] }),                   
-                helpers.minify()); 
+                       helpers.minify()); 
 
 // Detect how npm is run and branch based on that
 const npmLifecycleEvent = process.env.npm_lifecycle_event; 
@@ -60,36 +60,33 @@ if (shouldBeDeployed){
     console.log('[DEBUG-WebpackConfig] - deploy option is selected. config = ',config);
 }
 
+// 9. Merge devServer, css setup config parts, defined in webpack-parts.js file.
+if (npmLifecycleEvent === 'build' || npmLifecycleEvent === 'buildProd'){
+    config = merge(config, helpers.extractSCSS(PATHS.appStyles),
+                            helpers.extractCSS(PATHS.styleDeps),
+                            //helpers.purifyCSS(PATHS.styles), // we put call to purifyCss helper after call extractCss helper.The order is important. 
+                            helpers.clean(config.output.path) );    
+}
 
 switch(npmLifecycleEvent){
-    // 9. Merge devServer, css setup config parts, defined in webpack-parts.js file.
     case 'build':
         if (!isBuildingWithStats) console.log('[INFO-webpack.config] - \'buildDev\' config is picked.');
         config.output.path += '/dev';
-        config = merge(config, helpers.extractCSS(PATHS.styleDeps),
-                               helpers.extractCSS(PATHS.appStyles),
-                               //helpers.extractCSS(PATHS.styles),
-                               //helpers.purifyCSS(PATHS.styles), // we put call to purifyCss helper after call extractCss helper.The order is important. 
-                               helpers.clean(config.output.path),
-                               helpers.setupSourceMap().dev); 
+        config = merge(config, helpers.setupSourceMap().dev); 
         break;
     // 10. Merge 'FreeVariable' settings which does setting NODE_ENV variable to 'production'' programmatically, 
     //     as a way to tell webpack to optimise the build into smaller size.         
     case 'buildProd':
         if (!isBuildingWithStats) console.log('[INFO-webpack.config] - \'buildProd\' config is picked.');
         config.output.path += '/prod';
-        config = merge(config, helpers.extractCSS(PATHS.styleDeps),
-                               helpers.extractCSS(PATHS.appStyles),
-                               //helpers.extractCSS(PATHS.styles),
-                               //helpers.purifyCSS([PATHS.app]), // we put call to purifyCss helper after call extractCss helper.The order is important.
-                               helpers.clean(config.output.path),
-                               helpers.setFreeVariable('process.env.NODE_ENV', 'production'));
+        config = merge(config, helpers.setFreeVariable('process.env.NODE_ENV', 'production'));
         break;
     default:
         if (!isBuildingWithStats) console.log('[INFO-webpack.config] - default config is picked.');
         config.output.filename = '[name].[hash].js'; 
-        config = merge(config,  helpers.setupCSS(PATHS.styleDeps),
-                                helpers.setupCSS(PATHS.appStyles),
+        config = merge(config,  helpers.setupSCSS(PATHS.appStyles),
+                                helpers.setupCSS(PATHS.styleDeps),
+                                // helpers.setupCSS(PATHS.appStyles),                                
                                 helpers.setupSourceMap().dev,
                                 helpers.devServer({
                                     host: process.env.HOST,
@@ -98,6 +95,4 @@ switch(npmLifecycleEvent){
 }
 
 // 7. Validate the configuration object before we let webpack read it.
-// console.log('[DEBUG-WebpackConfig] - npmLifecycleEvent=', npmLifecycleEvent);
-// console.log('[DEBUG-WebpackConfig] - quietValidation=', quietValidation);
 module.exports = validate(config, {quiet: isBuildingWithStats});

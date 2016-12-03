@@ -1,4 +1,4 @@
-var styles = require('./component.css');
+var styles = require('./component.scss');
 
 module.exports = function () {
   var element = document.createElement('div');

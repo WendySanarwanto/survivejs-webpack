@@ -16,7 +16,8 @@ let PATHS = {
     app: path.join(__dirname, 'app'),
     build: path.join(__dirname, 'build'),
     style: path.join(stylesDirPath, 'style.scss'),
-    styleDeps: [ path.join(__dirname, 'node_modules', 'purecss', 'pure.css') ]         
+    styleDeps: [ path.join(__dirname, 'node_modules', 'purecss', 'pure.css') ],
+    assets: [ path.join(__dirname, 'assets') ]         
 };
 
 PATHS.appStyles = [ stylesDirPath, PATHS.app, PATHS.style ]; 

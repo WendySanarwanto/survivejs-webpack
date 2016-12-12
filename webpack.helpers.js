@@ -229,3 +229,18 @@ exports.purifyCSS = function(paths){
     })]
   };
 }
+
+/**
+ * Load image assets
+ */
+exports.setupImages = function(paths){
+  return {
+    module: {
+      loaders: [{
+        test: /\.(jpg|png|gif)$/,
+        loader: 'file?name=[path][name].[hash].[ext]',
+        include: paths
+      }]
+    }
+  }
+}

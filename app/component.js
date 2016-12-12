@@ -4,6 +4,7 @@ module.exports = function () {
   var element = document.createElement('div');
 
   element.innerHTML = '<div class="header">Hello Webpack</div>';
+  element.innerHTML += '<div><img src="../assets/webpack-logo-600x419.gif" alt=""></div>';
   element.innerHTML += '<hr/>';
   element.innerHTML += '<form class="form-entry">'+
                        '<label for="#greet"><span>Entry your name here </span></label>'+

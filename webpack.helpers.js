@@ -244,3 +244,18 @@ exports.setupImages = function(paths){
     }
   }
 }
+
+/**
+ * Load fonts 
+ */
+exports.setupFonts = function(paths){
+  return {
+    module: {
+      loaders: [{
+        test: /\.ttf$/,
+        loader: 'file',
+        include: paths
+      }]
+    }
+  }
+}

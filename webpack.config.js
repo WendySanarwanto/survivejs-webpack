@@ -69,6 +69,9 @@ if (npmLifecycleEvent === 'build' || npmLifecycleEvent === 'buildProd'){
                             helpers.clean(config.output.path) );    
 }
 
+// Setup fonts
+config = merge(config, helpers.setupFonts(PATHS.assets));
+
 switch(npmLifecycleEvent){
     case 'build':
         if (!isBuildingWithStats) console.log('[INFO-webpack.config] - \'buildDev\' config is picked.');
